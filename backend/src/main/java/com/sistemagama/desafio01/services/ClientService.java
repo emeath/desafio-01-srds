@@ -7,12 +7,15 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sistemagama.desafio01.dto.ClientDTO;
 import com.sistemagama.desafio01.entities.Client;
 import com.sistemagama.desafio01.repositories.ClientRepository;
+import com.sistemagama.desafio01.services.exceptions.DatabaseException;
 import com.sistemagama.desafio01.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -62,6 +65,17 @@ public class ClientService {
 		entity.setCpf(dto.getCpf());
 		entity.setIncome(dto.getIncome());
 		entity.setName(dto.getName());
+	}
+
+	public void delete(Long id) {
+		
+		try {
+			repository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException("Id not found " + id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Integrity violation");
+		}
 	}
 
 }
