@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sistemagama.desafio01.dto.ClientDTO;
 import com.sistemagama.desafio01.entities.Client;
 import com.sistemagama.desafio01.repositories.ClientRepository;
+import com.sistemagama.desafio01.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class ClientService {
@@ -27,7 +28,7 @@ public class ClientService {
 
 	public ClientDTO findById(Long id) {
 		Optional<Client> obj = repository.findById(id);
-		Client entity = obj.get();
+		Client entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entidade não encontrada"));
 		return new ClientDTO(entity);
 	}
 }
